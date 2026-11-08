@@ -24,6 +24,10 @@ from .physionet2012_forecasting import (
 )
 from .deid_ner import DeIDNERTask
 from .dka import DKAPredictionMIMIC4, T1DDKAPredictionMIMIC4
+from .diagnosis_evidence_retrieval import (
+    DiagnosisEvidenceRetrievalMIMIC3 as DiagnosisEvidenceRetrievalMIMIC3,
+    extract_likely_indicator_queries as extract_likely_indicator_queries,
+)
 # New exports must use the redundant `X as X` form: this module has no
 # __all__, and the PR lint gate flags F401 on newly added import lines.
 from .drug_recommendation import (
