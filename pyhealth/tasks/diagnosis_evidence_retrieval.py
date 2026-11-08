@@ -107,6 +107,10 @@ class DiagnosisEvidenceRetrievalMIMIC3(BaseTask):
       the patient's codes are also excluded. Used to measure false positives
       (Appendix A.1 of the paper).
 
+    The label is an evaluation target for a frozen (zero-shot) retriever, not a
+    training target, and is kept as a raw ``int``: without ``negative_pool``
+    every sample has label 1, which the ``"binary"`` processor rejects.
+
     The emergency visit time is ``edregtime``; urgent and emergency admissions
     without it fall back to ``admittime``. Notes stay as raw text so that an
     LLM retriever (e.g. :class:`~pyhealth.models.LLMEvidenceRetriever`) can
@@ -142,7 +146,7 @@ class DiagnosisEvidenceRetrievalMIMIC3(BaseTask):
 
     task_name: str = "DiagnosisEvidenceRetrievalMIMIC3"
     input_schema: ClassVar[dict[str, str]] = {"diagnosis": "raw", "notes": "raw"}
-    output_schema: ClassVar[dict[str, str]] = {"label": "binary"}
+    output_schema: ClassVar[dict[str, str]] = {"label": "raw"}
 
     def __init__(
         self,

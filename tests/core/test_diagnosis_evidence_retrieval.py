@@ -145,7 +145,7 @@ class TestDiagnosisEvidenceRetrievalMIMIC3(unittest.TestCase):
     def test_schema(self):
         self.assertEqual(self.task.task_name, "DiagnosisEvidenceRetrievalMIMIC3")
         self.assertEqual(self.task.input_schema, {"diagnosis": "raw", "notes": "raw"})
-        self.assertEqual(self.task.output_schema, {"label": "binary"})
+        self.assertEqual(self.task.output_schema, {"label": "raw"})
 
     def test_positive_sample(self):
         samples = self.task(_er_patient())
@@ -294,9 +294,15 @@ class TestDiagnosisEvidenceRetrievalMIMIC3(unittest.TestCase):
         self.assertEqual(len(dataset), 2)
         self.assertIsInstance(dataset[0]["notes"], list)
         self.assertEqual(dataset[0]["notes"][0]["note_id"], "100")
-        self.assertEqual(
-            sorted(float(dataset[i]["label"]) for i in range(2)), [0.0, 1.0]
+        self.assertEqual(sorted(dataset[i]["label"] for i in range(2)), [0, 1])
+
+    def test_positive_only_samples_load_into_sample_dataset(self):
+        # Without negative_pool every label is 1; the dataset must still build.
+        samples = self.task(_er_patient())
+        dataset = create_sample_dataset(
+            samples, self.task.input_schema, self.task.output_schema
         )
+        self.assertEqual([dataset[i]["label"] for i in range(len(dataset))], [1])
 
 
 if __name__ == "__main__":
